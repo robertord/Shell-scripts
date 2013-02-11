@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# File:		renameTVShows.sh
-# Author:	Roberto Rosende Dopazo 
-# 		<roberto.rosende.dopazo[at]gmail[dot]com
+# File:         renameTVShows.sh
+# Author:       Roberto Rosende Dopazo 
+#               <roberto[dot]rosende[dot]dopazo[at]gmail[dot]com>
 
 # Script renames downloaded files "cleaning" long filenames
 #
@@ -14,84 +14,92 @@
 
 if [ $# -lt 1 ];
 then
-	echo -e "\tUsage: renameTVShows.sh <path/with/files/to/rename>"
-	exit 1
+        echo -e "\tUsage: renameTVShows.sh <path/with/files/to/rename>"
+        exit 1
 fi
 
-if [ ! -d $1 ];
+if [ ! -d "$1" ];
 then
-	echo -e "\tUsage: renameTVShows.sh <path/with/files/to/rename>"
-	echo -e "\tError: $1 is not a valid directory"
-	exit 1
+        echo -e "\tUsage: renameTVShows.sh <path/with/files/to/rename>"
+        echo -e "\tError: $1 is not a valid directory"
+        exit 1
 fi
 
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
 find $1 -type f -iname "*.avi" -o  \
-		-iname "*.mkv" -o  \
-		-iname "*.mp4" -o  \
-		-iname "*.mpeg" -o \
-		-iname "*.mpg" -o  \
-		-iname "*.srt"     |
+                -iname "*.mkv" -o  \
+                -iname "*.mp4" -o  \
+                -iname "*.mpeg" -o \
+                -iname "*.mpg" -o  \
+                -iname "*.srt"     |
 while read -r FILE
 do
-	FILENAME=`basename ${FILE}`
-	FILEPATH=`dirname ${FILE}`
-	FILENEWNAME=`
-		echo ${FILENAME}                        | \
-                sed 's/\[/./g'                          | \
-                sed 's/\]/./g'                          | \
-                sed 's/www.newpct.com//g'               | \
-                sed 's/newpct.com//g'                   | \
-                sed 's/www.newpcestrenos.com//g'        | \
-                sed 's/newpcestrenos.com//g'            | \
-                sed 's/www.pctestrenos.com//g'          | \
-                sed 's/pctestrenos.com//g'              | \
-                sed 's/(EliteTorrent.net)//g'           | \
-		sed 's/HDTV 720px//g'                   | \
-                sed 's/HDTV 720p//g'                    | \
-		sed 's/HDTV 720//g'                     | \
-		sed 's/HDTV //g'                        | \
-		sed 's/HDV//g'                          | \
-		sed 's/HQ//g'                           | \
-		sed 's/TV//g'                           | \
-		sed 's/-NoTV//g'                        | \
-		sed 's/REPACK//g'                       | \
-		sed 's/DVDRip//g'                       | \
-		sed 's/dvdrip//g'                       | \
-		sed 's/DSRRIP//g'                       | \
-		sed 's/DSRRiP//g'                   	| \
-		sed 's/FRENCH//g'                       | \
-		sed 's/XViD//g'                         | \
-		sed 's/-PEPiTO//g'                      | \
-		sed 's/XviD-FQM//g'                     | \
-		sed 's/XVID//g'                         | \
-                sed 's/HD//g'                           | \
-                sed 's/VTV//g'                          | \
-                sed 's/-LOL//g'                         | \
-                sed 's/XviD-MiNT//g'                    | \
-                sed 's/Español Castellano//g'           | \
-                sed 's/AC3 5.1 //g'                     | \
-                sed 's/DVDRIP//g'                       | \
-                sed 's/Spanish//g'                      | \
-		sed 's/SPANISH//g'			| \
-		sed 's/Castellano//g'			| \
-                sed 's/Temporada \([0-9]\{1,\}\)//g'    | \
-                sed 's/Temp.\([0-9]\{1,\}\)//g'         | \
-                sed -e 's/[^a-zA-Z0-9]-[^a-zA-Z0-9]//g' | \
-                sed 's/[ ]\{2,\}/./g'                   | \
-                sed -e 's/\s\{1,\}[\.]/./g'             | \
-                sed -e 's/\([\.]\{2,\}\)/./g'           \
-                `
-	FILENEW=${FILEPATH}/${FILENEWNAME}
+        FILENAME=`basename ${FILE}`
+        FILEPATH=`dirname ${FILE}`
+        FILENEWNAME=`
+                echo ${FILENAME}                        	| \
+                sed 's/\[/./gI'                          	| \
+                sed 's/\]/./gI'                          	| \
+                sed 's/www.newpct.com//gI'               	| \
+                sed 's/newpct.com//gI'                   	| \
+                sed 's/www.newpcestrenos.com//gI'        	| \
+                sed 's/newpcestrenos.com//gI'            	| \
+                sed 's/www.pctestrenos.com//gI'          	| \
+                sed 's/pctestrenos.com//gI'              	| \
+                sed 's/(EliteTorrent.net)//gI'           	| \
+                sed 's/HDTV 720px//gI'                   	| \
+                sed 's/HDTV 720p//gI'                    	| \
+                sed 's/HDTV 720//gI'                     	| \
+                sed 's/HDTV //gI'                        	| \
+                sed 's/HDV//gI'                          	| \
+                sed 's/HQ//gI'                           	| \
+                sed 's/TV//gI'                           	| \
+                sed 's/-NoTV//gI'                        	| \
+                sed 's/REPACK//gI'                       	| \
+                sed 's/DVDRip//gI'                       	| \
+                sed 's/DSRRIP//gI'                       	| \
+                sed 's/DVBRIP//gI'                       	| \
+                sed 's/FRENCH//gI'                       	| \
+                sed 's/BluRayRip//gI'                    	| \
+                sed 's/XViD//gI'                         	| \
+                sed 's/-PEPiTO//gI'                      	| \
+                sed 's/XviD-FQM//gI'                     	| \
+                sed 's/XVID//gI'                         	| \
+                sed 's/HD//gI'                           	| \
+                sed 's/VTV//gI'                          	| \
+                sed 's/-LOL//gI'                         	| \
+                sed 's/XviD-MiNT//gI'                    	| \
+                sed 's/Español Castellano//gI'           	| \
+                sed 's/Español//gI'                      	| \
+                sed 's/Espa??ol//gI'                     	| \
+                sed 's/espa??ol//gI'                     	| \
+                sed 's/español//gI'                      	| \
+                sed 's/AC3 5.1 //gI'                     	| \
+                sed 's/AC3 5.1//gI'                      	| \
+                sed 's/www.tumejortv.com//gI'            	| \
+                sed 's/DVDRIP//gI'                       	| \
+                sed 's/Spanish//gI'                      	| \
+                sed 's/Castellano//gI'                   	| \
+                sed 's/by k2_power//gI'                  	| \
+                sed 's/Temporada \([0-9]\{1,\}\)//gI'    	| \
+                sed 's/Temp.\([0-9]\{1,\}\)//gI'         	| \
+                sed -e 's/[^a-zA-Z0-9]-[^a-zA-Z0-9]//gI' 	| \
+                sed -e 's/\([0-9]\)x\([0-9]\{2\}\)/.\1\2./gI'   |\
+                sed 's/[ ]\{2,\}/./gI'                   	| \
+                sed -e 's/\s\{1,\}[\.]/./gI'             	| \
+                sed -e 's/\([\.]\{2,\}\)/./gI'           	\
+        `
+        FILENEW=${FILEPATH}/${FILENEWNAME}
         if [ "${FILE}" != "${FILENEW}" ];
         then
                 echo -e "Renaming: \n\t $FILE \n\t\t into \n\t $FILENEW \n" 
-                mv "${FILE}" "${FILEPATH}/{${FILENEW}"
+                mv "$FILE" "$FILENEW"
         fi
 done
 
 IFS=$SAVEIFS
 
 exit 0
+
