@@ -72,8 +72,6 @@ do
                 sed 's/-LOL//gI'                         		| \
                 sed 's/XviD-MiNT//gI'                    		| \
                 sed 's/Español Castellano//gI'           		| \
-                sed 's/Español//gI'                      		| \
-                sed 's/Espa??ol//gI'                     		| \
                 sed 's/espa??ol//gI'                     		| \
                 sed 's/español//gI'                      		| \
                 sed 's/latinoamérica//gI'                               | \
