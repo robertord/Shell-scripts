@@ -76,9 +76,14 @@ do
                 sed 's/Espa??ol//gI'                     		| \
                 sed 's/espa??ol//gI'                     		| \
                 sed 's/español//gI'                      		| \
+                sed 's/latinoamérica//gI'                               | \
+                sed 's/latinoamerica//gI'                               | \
                 sed 's/AC3 5.1 //gI'                     		| \
                 sed 's/AC3 5.1//gI'                      		| \
                 sed 's/www.tumejortv.com//gI'            		| \
+                sed 's/www.descargaya.es//gI'                           | \
+                sed 's/www.descargaya.com//gI'                          | \
+                sed 's/www.divxatope.com//gI'                           | \
                 sed 's/DVDRIP//gI'                       		| \
                 sed 's/Spanish//gI'                      		| \
                 sed 's/Castellano//gI'                   		| \
@@ -87,11 +92,12 @@ do
                 sed 's/Temp.\([0-9]\{1,\}\)//gI'         		| \
                 sed -e 's/[^a-zA-Z0-9]-[^a-zA-Z0-9]//gI' 		| \
                 sed -e 's/\([0-9]\)x\([0-9]\{2\}\)/.\1\2./gI'   	| \
-		sed -e 's/s0\([0-9]\{1\}\)e\([0-9]\{2\}\)/.\1\2./gI'	|\
+		sed -e 's/s0\([0-9]\{1\}\)e\([0-9]\{2\}\)/.\1\2./gI'	| \
                 sed 's/[ ]\{2,\}/./gI'                   		| \
 		sed 's/\.[ ]/./gI'                          		| \
                 sed -e 's/\s\{1,\}[\.]/./gI'             		| \
-                sed -e 's/\([\.]\{2,\}\)/./gI'           		\
+                sed -e 's/\([\.]\{2,\}\)/./gI'           		| \
+                sed 's/\(^\.\)\([a-z0-9]\+\)/\2/gI'                     \
         `
         FILENEW=${FILEPATH}/${FILENEWNAME}
         if [ "${FILE}" != "${FILENEW}" ];
