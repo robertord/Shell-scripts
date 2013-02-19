@@ -83,6 +83,7 @@ do
                 sed 's/www.descargaya.com//gI'                          | \
                 sed 's/www.divxatope.com//gI'                           | \
                 sed 's/DVDRIP//gI'                       		| \
+		sed 's/dvb//gI'						| \
                 sed 's/Spanish//gI'                      		| \
                 sed 's/Castellano//gI'                   		| \
                 sed 's/by k2_power//gI'                  		| \
