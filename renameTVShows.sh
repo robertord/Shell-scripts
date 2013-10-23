@@ -1,112 +1,113 @@
 #!/bin/bash
 
-# File:         renameTVShows.sh
+# File:         changeDownloadasName.sh
 # Author:       Roberto Rosende Dopazo 
 #               <roberto[dot]rosende[dot]dopazo[at]gmail[dot]com>
 
-# Script renames downloaded files "cleaning" long filenames
-#
-# Script rename files returned by -iname expressions in given path 
-# you can add more filetypes adding more <-o -iname ".ext"> params and 
-# it deletes any matching expression with sed lines
-# To include more expressions to delete or substitute only add sed 
-# expressions on FILENEWNAME build
+# Script renames files *.avi or *.mkv inside a dir
+# it puts first name of dir to the file and then "clean" name 
 
 if [ $# -lt 1 ];
 then
-        echo -e "\tUsage: renameTVShows.sh <path/with/files/to/rename>"
+        echo -e "\tUsage: changeDownloadsName.sh <path/with/dirs/to/rename>"
         exit 1
 fi
 
 if [ ! -d "$1" ];
 then
-        echo -e "\tUsage: renameTVShows.sh <path/with/files/to/rename>"
+        echo -e "\tUsage: changeDownloadsName.sh <path/with/dirs/to/rename>"
         echo -e "\tError: $1 is not a valid directory"
         exit 1
 fi
 
+read -p " - You want change $1, .avi or .mkv will be renamed and dir removed. Agree?[y/n] " answer
+if [[ $answer != y ]] ; then
+	exit 0;
+fi
+
+PATHD=`readlink -f .`/
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
-
-find $1 -type f -iname "*.avi" -o  \
-                -iname "*.mkv" -o  \
-                -iname "*.mp4" -o  \
-                -iname "*.mpeg" -o \
-                -iname "*.mpg" -o  \
-                -iname "*.srt"     |
+find $1 -mindepth 1 -type d |
+while read -r DIR
+do
+	if [ "$DIR" != "$PATHD" ]&& [ "$DIR" != ".." ];
+	then
+		DIRNEWNAME=`
+					echo ${DIR}		| \
+					sed -e 's/\[/./gI'	| \
+					sed -e 's/\]/./gI'	| \
+					sed -e 's/\.$//gI'	\
+					` 
+		DIRNEW=${DIRNEWNAME}
+		#if [ "${DIR}" != "${DIRNEW}" ];
+		#then
+			mv "$DIR"/*.avi "$DIRNEW.avi" 
+			mv "$DIR"/*.mkv "$DIRNEW.mkv" 
+			rm -rf $DIR
+		#fi
+	fi
+done
+##now rename all files erasing unwanted parts
+find $1 -type f -iname "*.avi" -o -iname "*.mkv" |
 while read -r FILE
 do
-        FILENAME=`basename ${FILE}`
-        FILEPATH=`dirname ${FILE}`
-        FILENEWNAME=`
-                echo ${FILENAME}                        		| \
-                sed 's/\[/./gI'                          		| \
-                sed 's/\]/./gI'                          		| \
-                sed 's/www.newpct.com//gI'               		| \
-                sed 's/newpct.com//gI'                   		| \
-                sed 's/www.newpcestrenos.com//gI'        		| \
-                sed 's/newpcestrenos.com//gI'            		| \
-                sed 's/www.pctestrenos.com//gI'          		| \
-                sed 's/pctestrenos.com//gI'              		| \
-                sed 's/(EliteTorrent.net)//gI'           		| \
-                sed 's/HDTV 720px//gI'                   		| \
-                sed 's/HDTV 720p//gI'                    		| \
-                sed 's/HDTV 720//gI'                     		| \
-                sed 's/HDTV //gI'                        		| \
-                sed 's/HDV//gI'                          		| \
-                sed 's/HQ//gI'                           		| \
-                sed 's/TV//gI'                           		| \
-                sed 's/-NoTV//gI'                        		| \
-                sed 's/REPACK//gI'                       		| \
-                sed 's/DVDRip//gI'                       		| \
-                sed 's/DSRRIP//gI'                       		| \
-                sed 's/DVBRIP//gI'                       		| \
-                sed 's/FRENCH//gI'                       		| \
-                sed 's/BluRayRip//gI'                    		| \
-                sed 's/XViD//gI'                         		| \
-                sed 's/-PEPiTO//gI'                      		| \
-                sed 's/XviD-FQM//gI'                     		| \
-                sed 's/XVID//gI'                         		| \
-                sed 's/HD//gI'                           		| \
-                sed 's/VTV//gI'                          		| \
-                sed 's/-LOL//gI'                         		| \
-                sed 's/XviD-MiNT//gI'                    		| \
-                sed 's/Español Castellano//gI'           		| \
-                sed 's/espa??ol//gI'                     		| \
-                sed 's/español//gI'                      		| \
-                sed 's/latinoamérica//gI'                               | \
-                sed 's/latinoamerica//gI'                               | \
-                sed 's/AC3 5.1 //gI'                     		| \
-                sed 's/AC3 5.1//gI'                      		| \
-                sed 's/www.tumejortv.com//gI'            		| \
-                sed 's/www.descargaya.es//gI'                           | \
-                sed 's/www.descargaya.com//gI'                          | \
-                sed 's/www.divxatope.com//gI'                           | \
-                sed 's/DVDRIP//gI'                       		| \
-		sed 's/dvb//gI'						| \
-                sed 's/Spanish//gI'                      		| \
-                sed 's/Castellano//gI'                   		| \
-                sed 's/by k2_power//gI'                  		| \
-                sed 's/Temporada \([0-9]\{1,\}\)//gI'    		| \
-                sed 's/Temp.\([0-9]\{1,\}\)//gI'         		| \
-                sed -e 's/[^a-zA-Z0-9]-[^a-zA-Z0-9]//gI' 		| \
-                sed -e 's/\([0-9]\)x\([0-9]\{2\}\)/.\1\2./gI'   	| \
-		sed -e 's/s0\([0-9]\{1\}\)e\([0-9]\{2\}\)/.\1\2./gI'	| \
-                sed 's/[ ]\{2,\}/./gI'                   		| \
-		sed 's/\.[ ]/./gI'                          		| \
-                sed -e 's/\s\{1,\}[\.]/./gI'             		| \
-                sed -e 's/\([\.]\{2,\}\)/./gI'           		| \
-                sed 's/\(^\.\)\([a-z0-9]\+\)/\2/gI'                     \
-        `
-        FILENEW=${FILEPATH}/${FILENEWNAME}
-        if [ "${FILE}" != "${FILENEW}" ];
-        then
-                echo -e "Renaming: \n\t $FILE \n\t\t into \n\t $FILENEW \n" 
-                mv "$FILE" "$FILENEW"
-        fi
+        FILENEW=`
+		echo $FILE 					| \
+		sed 's/\[/./gI'					| \
+		sed 's/\]/./gI'					| \
+		sed 's/www.newpct.com//gI' 			| \
+		sed 's/newpct.com//gI'               		| \
+		sed 's/www.newpcestrenos.com//gI'       	| \
+		sed 's/newpcestrenos.com//gI'        		| \
+		sed 's/www.pctestrenos.com//gI'        		| \
+		sed 's/pctestrenos.com//gI'          		| \
+		sed 's/(EliteTorrent.net)//gI'        		| \
+		sed 's/HDTV 720px//gI' 				| \
+		sed 's/HDTV 720p//gI'            		| \
+		sed 's/HDTV 720//gI'             		| \
+		sed 's/HDTV //gI' 				| \
+		sed 's/HDV//gI'					| \
+		sed 's/HQ//gI'                         		| \
+		sed 's/TV//gI'                          	| \
+		sed 's/-NoTV//gI'                       	| \
+		sed 's/REPACK//gI'                      	| \
+		sed 's/DVDRip//gI'                      	| \
+		sed 's/DSRRIP//gI'                      	| \
+		sed 's/BluRayRIP//gI'				| \
+		sed 's/BluRay Rip//gI'				| \
+		sed 's/Ac3 5.1//gI'				| \
+		sed 's/Ac3 2.0//gI'				| \
+		sed 's/AC3//gI'					| \
+		sed 's/FRENCH//gI'                      	| \
+		sed 's/XViD//gI'                       		| \
+		sed 's/-PEPiTO//gI'                     	| \
+		sed 's/XviD-FQM//gI'                    	| \
+		sed 's/HD//gI'                       		| \
+		sed 's/VTV//gI'                         	| \
+		sed 's/-LOL//gI'                        	| \
+		sed 's/XviD-MiNT//gI'                   	| \
+		sed 's/Español Castellano//gI' 			| \
+		sed 's/AC3 5.1 //gI' 				| \
+		sed 's/Spanish//gI'              		| \
+		sed 's/BRrip//gI'				| \
+		sed 's/ 5.1//gI'				| \
+		sed 's/-././gI'					| \
+		sed -e 's/()//gI'				| \
+		sed 's/\(Proper\)//gI'				| \
+		sed 's/Temporada \([0-9]\{1,\}\)//gI' 		| \
+		sed 's/Temp.\([0-9]\{1,\}\)//gI'    		| \
+		sed -e 's/[^a-zA-Z0-9]-[^a-zA-Z0-9]/ /gI'	| \
+		sed 's/[ ]\{2,\}/./gI'              		| \
+		sed -e 's/\s\{1,\}[\.]/./gI'             	| \
+		sed -e 's/\([\.]\{2,\}\)/./gI' 			\
+		` 
+	if [ "${FILE}" != "${FILENEW}" ];
+	then
+		echo -e "Renaming: \n\t $FILE \n\t\t into \n\t $FILENEW" 
+		mv "${FILE}" "${FILENEW}"
+	fi
 done
 
-IFS=$SAVEIFS
-
+IFS=$SAVEIFS                                                                                                                                                                                              
 exit 0
-
